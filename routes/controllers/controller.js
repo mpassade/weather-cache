@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const redis = require('redis')
+const axios = require('axios')
 const {client} = require('../middleware/middleware')
 require('dotenv').config()
 
@@ -35,26 +35,22 @@ module.exports = {
     },
 
     weather: (req, res) => {
-        zipCodeUrl += req.body.zipCode + '/degrees'
 
-        fetch(zipCodeUrl).then(zipCodeData => {
+        let zipUrl = zipCodeUrl + req.body.zipCode + '/degrees'
+
+        fetch(zipUrl)
+        .then(zipCodeData => {
             return zipCodeData.json()
-        }).then(newData => {
-            let lat = newData.lat
-            let lng = newData.lng
-            darkSkyUrl += lat + ',' + lng
-            console.log('lat:' + lat)
-            console.log('lng:' + lng)
-            console.log('newData:' + newData)
-            console.log('darkSkyURL: ' + darkSkyUrl)
-            return darkSkyUrl
+        })
+        .then(newData => {
+            const lat = newData.lat
+            const lng = newData.lng
+            let dsUrl = darkSkyUrl + lat + ',' + lng
+            return dsUrl
         }).then(darkSky => {
-            console.log('darkSky: ' + darkSky)
             fetch(darkSky).then(dsData => {
-                console.log('dsData: ' + dsData)
                 return dsData.json()
             }).then(result => {
-                console.log(result)
                 return result.daily.data
             }).then(data => {
                 const days = data.map(obj => {
@@ -102,7 +98,8 @@ module.exports = {
                 console.log(err)
                 return res.status(400).send('Server Error: Cannot get data from Dark Sky API')
             })
-        }).catch(() => {
+        }).catch((err) => {
+            console.log(err)
             return res.status(400).send('Server Error: Cannot get data from Zip Code API')
         })
     }
