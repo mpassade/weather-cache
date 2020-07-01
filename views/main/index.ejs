@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <title>Weather</title>
+</head>
+<body>
+    <div id="zip-code-container">
+        <header id="zip-code-header">Enter Zip Code to see Weather Forecast</header>
+        <% if (errors.length) { %>
+            <span id="zip-code-error"><%=errors%></span>
+        <% } %>
+        <form action="/" method="POST">
+            <input type="number" id="zip-code-input" name="zipCode" placeholder="Zip Code">
+            <button id="zip-code-btn" type="submit">Submit</button>
+        </form>
+    </div>
+    <% if (dataOrigin.length) { %>
+        <header id="data-origin-header">
+            Data Origin:
+            <span id="data-origin-val"><%=dataOrigin[0]%></span>
+        </header>
+        <div id="weather-container">
+            <% for( let i = 0; i < 5; i++ ) { %>
+                <div class="day-container">
+                    <header class="day-header"><%=days[i]%></header>
+                    <img src="/images/<%=icons[i]%>.png" class="weather-icons">
+                    <span>Date: <%=date[i]%></span>
+                    <span>Summary: <%=summary[i]%></span>
+                    <span>Sunrise Time: <%=sunrise[i]%></span>
+                    <span>Sunset Time: <%=sunset[i]%></span>
+                    <span>Hi Temp: <%=hiTemp[i]%> F</span>
+                    <span>Low Temp: <%=lowTemp[i]%> F</span>
+                </div>
+            <% } %>
+        </div>
+    <% } %>
+</body>
+</html>
